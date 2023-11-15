@@ -58,9 +58,13 @@ const CompOpt compopts[] = {
   {"--compiler-options", AFFECTS_CPP | TAKES_ARG},     // nvcc
   {"--config", TAKES_ARG},                             // Clang
   {"--gcc-toolchain=", TAKES_CONCAT_ARG | TAKES_PATH}, // Clang
-  {"--libdevice-directory", AFFECTS_CPP | TAKES_ARG},  // nvcc
-  {"--output-directory", AFFECTS_CPP | TAKES_ARG},     // nvcc
+  {"--include_path=",
+   AFFECTS_CPP | TAKES_CONCAT_ARG | TAKES_PATH}, // TI
+  {"--libdevice-directory", AFFECTS_CPP | TAKES_ARG},        // nvcc
+  {"--output-directory", AFFECTS_CPP | TAKES_ARG},           // nvcc
   {"--param", TAKES_ARG},
+  {"--preproc_dependency=", TAKES_CONCAT_ARG | TAKES_PATH}, // TI
+  {"--preproc_only", TOO_HARD}, // TI
   {"--save-temps", TOO_HARD},
   {"--save-temps=cwd", TOO_HARD},
   {"--save-temps=obj", TOO_HARD},
