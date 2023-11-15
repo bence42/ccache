@@ -702,7 +702,11 @@ process_option_arg(const Context& ctx,
       state.dep_args.push_back("-MF");
       state.dep_args.push_back(args_info.output_dep);
     } else {
-      state.dep_args.push_back("-MF" + args_info.output_dep);
+      if (arg[3] == '=') {
+        state.dep_args.push_back("-MF=" + args_info.output_dep);
+      } else {
+        state.dep_args.push_back("-MF" + args_info.output_dep);
+      }
     }
     return Statistic::none;
   }

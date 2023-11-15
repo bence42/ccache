@@ -355,7 +355,7 @@ TEST_CASE("MF_should_not_be_added_if_run_second_cpp_is_true")
   CHECK(result.compiler_args.to_string() == "cc -c -MD");
 }
 
-TEST_CASE("equal_sign_after_MF_should_be_removed")
+TEST_CASE("equal_sign_after_MF_should_kept_as_is")
 {
   TestContext test_context;
   Context ctx;
@@ -366,8 +366,38 @@ TEST_CASE("equal_sign_after_MF_should_be_removed")
 
   CHECK(!result.error);
   CHECK(result.preprocessor_args.to_string() == "cc");
+  CHECK(result.extra_args_to_hash.to_string() == "-MF=path");
+  CHECK(result.compiler_args.to_string() == "cc -c -MF=path");
+}
+
+TEST_CASE("file_concatonated_to_MF_should_be_kept_as_is")
+{
+  TestContext test_context;
+  Context ctx;
+  ctx.orig_args = Args::from_string("cc -c -MFpath foo.c -o foo.o");
+  util::write_file("foo.c", "");
+
+  const ProcessArgsResult result = process_args(ctx);
+
+  CHECK(!result.error);
+  CHECK(result.preprocessor_args.to_string() == "cc");
   CHECK(result.extra_args_to_hash.to_string() == "-MFpath");
   CHECK(result.compiler_args.to_string() == "cc -c -MFpath");
+}
+
+TEST_CASE("separate_file_after_MF_should_stay_separate")
+{
+  TestContext test_context;
+  Context ctx;
+  ctx.orig_args = Args::from_string("cc -c -MF path foo.c -o foo.o");
+  util::write_file("foo.c", "");
+
+  const ProcessArgsResult result = process_args(ctx);
+
+  CHECK(!result.error);
+  CHECK(result.preprocessor_args.to_string() == "cc");
+  CHECK(result.extra_args_to_hash.to_string() == "-MF path");
+  CHECK(result.compiler_args.to_string() == "cc -c -MF path");
 }
 
 TEST_CASE("sysroot_should_be_rewritten_if_basedir_is_used")
